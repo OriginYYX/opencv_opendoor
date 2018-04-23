@@ -10,8 +10,7 @@ import cv2
 import sys
 from PIL import Image
 camera_idx = 0;
-window_name = "yyx_test"
-window_grey = "grey"
+
 def CatchUsbVideo(window_name, camera_idx):
     cv2.namedWindow(window_name)
     
@@ -36,6 +35,7 @@ def CatchUsbVideo(window_name, camera_idx):
             for faceRect in faceRects:  #单独框出每一张人脸
                 x, y, w, h = faceRect        
                 cv2.rectangle(frame, (x - 10, y - 10), (x + w + 10, y + h + 10), color, 2)
+                cv2.putText(frame,'people',(x+w+20,y),cv2.FONT_HERSHEY_COMPLEX,1,(0,0,255),1)
                         
         #显示图像
         cv2.imshow(window_name, frame)
@@ -49,4 +49,4 @@ def CatchUsbVideo(window_name, camera_idx):
     cv2.destroyAllWindows() 
     
 if __name__ == '__main__':
-    CatchUsbVideo("识别人脸区域", camera_idx)
+    CatchUsbVideo("yyx_test", camera_idx)
