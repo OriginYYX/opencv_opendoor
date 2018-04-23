@@ -9,17 +9,17 @@ Created on Mon Apr 23 19:25:30 2018
 import cv2
 import sys
 from PIL import Image
-
+camera_idx = 0;
+window_name = "yyx_test"
+window_grey = "grey"
 def CatchUsbVideo(window_name, camera_idx):
     cv2.namedWindow(window_name)
     
-    #视频来源，可以来自一段已存好的视频，也可以直接来自USB摄像头
     cap = cv2.VideoCapture(camera_idx)                
     
     #告诉OpenCV使用人脸识别分类器
     classfier = cv2.CascadeClassifier("E:\Program\opencv-3.4.1\data\haarcascades\haarcascade_frontalface_alt2.xml")
     
-    #识别出人脸后要画的边框的颜色，RGB格式
     color = (0, 255, 0)
         
     while cap.isOpened():
@@ -38,7 +38,8 @@ def CatchUsbVideo(window_name, camera_idx):
                 cv2.rectangle(frame, (x - 10, y - 10), (x + w + 10, y + h + 10), color, 2)
                         
         #显示图像
-        cv2.imshow(window_name, frame)        
+        cv2.imshow(window_name, frame)
+        
         c = cv2.waitKey(1)
         if c & 0xFF == ord('q'):
             break        
@@ -48,7 +49,4 @@ def CatchUsbVideo(window_name, camera_idx):
     cv2.destroyAllWindows() 
     
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage:%s camera_id\r\n" % (sys.argv[0]))
-    else:
-        CatchUsbVideo("识别人脸区域", int(sys.argv[1]))
+    CatchUsbVideo("识别人脸区域", camera_idx)
