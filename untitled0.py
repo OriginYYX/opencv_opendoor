@@ -5,13 +5,27 @@ Created on Mon Apr 23 19:25:30 2018
 @author: 10566
 """
 #-*- coding: utf-8 -*-
-
+from aip import AipFace
+import time
 import cv2
 import sys
 from PIL import Image
 camera_idx = 0;
 
-def CatchUsbVideo(window_name, camera_idx):
+APP_ID = '11145409'  
+API_KEY = 'vVsNOqLoB1QwwyVITZaPswHq'  
+SECRET_KEY = 'ub0n4T1oqGQ6NELSwm3kV2niN3EtYws9'
+face = AipFace(APP_ID, API_KEY, SECRET_KEY)
+options = {  
+    'max_face_num': 1,  
+    'face_fields': "age,beauty",  
+}
+
+def get_file_content(filePath):  
+    with open(filePath, 'rb') as fp:  
+        return fp.read()
+
+def CatchVideo(window_name, camera_idx):
     cv2.namedWindow(window_name)
     
     cap = cv2.VideoCapture(camera_idx)                
@@ -23,6 +37,7 @@ def CatchUsbVideo(window_name, camera_idx):
         
     while cap.isOpened():
         ok, frame = cap.read() #读取一帧数据
+        
         if not ok:            
             break  
 
@@ -32,21 +47,34 @@ def CatchUsbVideo(window_name, camera_idx):
         #人脸检测，1.2和2分别为图片缩放比例和需要检测的有效点数
         faceRects = classfier.detectMultiScale(grey, scaleFactor = 1.2, minNeighbors = 3, minSize = (32, 32))
         if len(faceRects) > 0:            #大于0则检测到人脸                                   
-            for faceRect in faceRects:  #单独框出每一张人脸
+            for faceRect in faceRects:
+                cv2.imwrite('messigray.jpeg', frame)
+                result = face.detect(get_file_content('messigray.jpeg'),options)
+                #tot = result[result]
+                #print(type(tot))
+                fof=result['result']
+                fof=fof[0]
+                fof=fof['beauty']
+                print(fof)
+                #单独框出每一张人脸
                 x, y, w, h = faceRect        
                 cv2.rectangle(frame, (x - 10, y - 10), (x + w + 10, y + h + 10), color, 2)
-                cv2.putText(frame,'people',(x+w+20,y),cv2.FONT_HERSHEY_COMPLEX,1,(0,0,255),1)
-                        
+                cv2.putText(frame,"pop",(x+w+20,y),cv2.FONT_HERSHEY_COMPLEX,1,(0,0,255),1)
+                
+                
         #显示图像
         cv2.imshow(window_name, frame)
+        time.sleep(0.3)
         
         c = cv2.waitKey(1)
         if c & 0xFF == ord('q'):
-            break        
+            break
+        elif c & 0xFF == ord('s'):
+            cv2.imwrite('messigray.jpeg', frame)
     
     #释放摄像头并销毁所有窗口
     cap.release()
     cv2.destroyAllWindows() 
     
 if __name__ == '__main__':
-    CatchUsbVideo("yyx_test", camera_idx)
+    CatchVideo("yyx_test", camera_idx)
