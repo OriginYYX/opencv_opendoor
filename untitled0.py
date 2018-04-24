@@ -53,18 +53,19 @@ def CatchVideo(window_name, camera_idx):
                 #tot = result[result]
                 #print(type(tot))
                 fof=result['result']
-                fof=fof[0]
-                fof=fof['beauty']
-                print(fof)
+                if fof[0]:
+                    fof=fof[0]
+                    fof=fof['beauty']
+                    fof=str(fof)
                 #单独框出每一张人脸
                 x, y, w, h = faceRect        
                 cv2.rectangle(frame, (x - 10, y - 10), (x + w + 10, y + h + 10), color, 2)
-                cv2.putText(frame,"pop",(x+w+20,y),cv2.FONT_HERSHEY_COMPLEX,1,(0,0,255),1)
+                cv2.putText(frame,fof,(x+w+20,y),cv2.FONT_HERSHEY_COMPLEX,1,(0,0,255),1)
                 
                 
         #显示图像
         cv2.imshow(window_name, frame)
-        time.sleep(0.3)
+        #time.sleep(0.05)
         
         c = cv2.waitKey(1)
         if c & 0xFF == ord('q'):
