@@ -12,7 +12,7 @@ import requests
 API_KEY = 'vVsNOqLoB1QwwyVITZaPswHq'  
 SECRET_KEY = 'ub0n4T1oqGQ6NELSwm3kV2niN3EtYws9'
 url = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=vVsNOqLoB1QwwyVITZaPswHq&client_secret=ub0n4T1oqGQ6NELSwm3kV2niN3EtYws9'
-
+api_url = "https://aip.baidubce.com/rest/2.0/face/v2/match"
 def CatchVideo(window_name='test', camera_idx=0):
     cv2.namedWindow(window_name)
     
@@ -40,10 +40,13 @@ def CatchVideo(window_name='test', camera_idx=0):
                 face = frame[y - 30:y + h + 30,x - 30:x + w + 30]
                 cv2.imwrite('face.jpeg', face)
                 cv2.rectangle(frame, (x - 30, y - 30), (x + w + 30, y + h + 30), color, 2)
-                
+                img2 = pic_base64('face.jpeg')
+                fof = get_socer(img1,img2)
+                fof = str(fof)
+                print(fof)
                 
         #显示图像
-        cv2.imshow(window_name, face)
+        cv2.imshow(window_name, frame)
         #time.sleep(0.05)
         
         c = cv2.waitKey(1)
@@ -64,8 +67,16 @@ def pic_base64(filePath):
     f = open(filePath, 'rb')
     
     return base64.b64encode(f.read())
+    
+def get_socer(img1,img2):
+    params = {"images":img1 + b',' + img2}
+    face_socer=requests.post(api_url,data=params)
+    return face_socer.json()['result'][0]['score']
 
 if __name__ == '__main__':
-    #print(get_token())
-    #CatchVideo()
-    test=pic_base64('face_pic/1.jpg')
+    img1 = pic_base64('face_pic/1.jpg')
+    token = get_token()
+    api_url=api_url + "?access_token=" + token
+    CatchVideo()
+    
+    
