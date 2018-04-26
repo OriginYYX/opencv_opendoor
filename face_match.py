@@ -68,4 +68,4 @@ def pic_base64(filePath):
 if __name__ == '__main__':
     #print(get_token())
     #CatchVideo()
-    test=pic_base64('face.jpeg')
+    test=pic_base64('face_pic/1.jpg')
